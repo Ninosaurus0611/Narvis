@@ -2,12 +2,14 @@ import os
 from skills.projects import create_project
 from skills.notes import add_note_to_project, list_projects
 from skills.inbox import list_inbox_items, read_inbox_item, move_inbox_to_project, INBOX_DIR
+from skills.decisions import add_decision_to_project
 
 def show_help():
     print("\nBeschikbare commando's:")
     print(" inbox       -> voeg iets toe aan de inbox")
     print(" project     -> maak een nieuw project")
     print(" notes       -> voeg een notitie toe aan een project")
+    print(" decision    -> voeg een beslissing toe aan een project")
     print(" process     -> verwerk inbox-item naar project")
     print(" help        -> toon deze lijst")
     print(" exit        -> stop Narvis\n")
@@ -95,6 +97,40 @@ def run_narvis():
             if text:
                 add_note_to_project(project_id, text)
                 print("Notitie toegevoegd. \n")
+
+
+        elif command == "decision":
+            projects = list_projects()
+
+            if not projects:
+                print("Geen projecten gevonden.\n")
+                continue
+
+            print("Beschikbare projecten:")
+            for p in projects:
+                print(f"- {p}")
+
+            project_id = input("Kies project (id): ").strip()
+
+            if project_id not in projects:
+                print("Ongeldig project.\n")
+                continue
+
+            decision = input("Wat is de beslissing?\n> ").strip()
+            reason = input("Waarom deze beslissing?\n> ").strip()
+            alternatives = input("Alternatieven (optioneel):\n> ").strip()
+            impact = input("Gevolgen / impact (optioneel):\n> ").strip()
+
+            add_decision_to_project(
+                project_id,
+                decision,
+                reason,
+                alternatives,
+                impact
+            )
+
+            print("Beslissing toegevoegd aan beslissingen-log.\n")
+
 
         elif command == "process":
             inbox_items = list_inbox_items()
