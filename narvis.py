@@ -3,6 +3,7 @@ from skills.projects import create_project
 from skills.notes import add_note_to_project, list_projects
 from skills.inbox import list_inbox_items, read_inbox_item, move_inbox_to_project, INBOX_DIR
 from skills.decisions import add_decision_to_project
+from skills.reflections import add_reflection_to_project
 
 def show_help():
     print("\nBeschikbare commando's:")
@@ -11,6 +12,7 @@ def show_help():
     print(" notes       -> voeg een notitie toe aan een project")
     print(" decision    -> voeg een beslissing toe aan een project")
     print(" process     -> verwerk inbox-item naar project")
+    print(" reflection  -> voeg een reflectie toe aan een project")
     print(" help        -> toon deze lijst")
     print(" exit        -> stop Narvis\n")
 
@@ -171,6 +173,39 @@ def run_narvis():
             new_path = move_inbox_to_project(inbox_file, project_id)
 
             print(f"Inbox-item verwerkt en toegevoegd aan project: {new_path}\n")
+
+
+        elif command == "reflection":
+            projects = list_projects()
+
+            if not projects:
+                print("Geen projecten gevonden.\n")
+                continue
+
+            print("Beschikbare projecten:")
+            for p in projects:
+                print(f"- {p}")
+
+            project_id = input("Kies project (id): ").strip()
+
+            if project_id not in projects:
+                print("Ongeldig project.\n")
+                continue
+
+            reflection = input("Reflectie:\n> ").strip()
+            context = input("Context (optioneel):\n> ").strip()
+            lesson = input("Les / inzicht (optioneel):\n> ").strip()
+
+            add_reflection_to_project(
+                project_id,
+                reflection,
+                context,
+                lesson
+            )
+
+            print("Reflectie opgeslagen.\n")
+
+
 
         else:
             print("Onbekend commando. Typ 'help' voor opties.\n")
