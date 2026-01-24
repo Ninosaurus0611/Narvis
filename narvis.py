@@ -4,6 +4,7 @@ from skills.notes import add_note_to_project, list_projects
 from skills.inbox import list_inbox_items, read_inbox_item, move_inbox_to_project, INBOX_DIR
 from skills.decisions import add_decision_to_project
 from skills.reflections import add_reflection_to_project
+from config.settings import AI_MODE
 
 def show_help():
     print("\nBeschikbare commando's:")
@@ -212,3 +213,8 @@ def run_narvis():
 
 if __name__ == "__main__":
     run_narvis()
+
+# if AI_MODE == "assist":
+    # helpende suggesties
+# elif AI_MODE == "reflect":
+    # terugkoppeling

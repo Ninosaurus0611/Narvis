@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from config.settings import ENABLE_GLOBAL_DECISIONS_LOG
 
 PROJECTS_DIR = os.path.join("data", "projects")
 GLOBAL_DECISIONS_DIR = os.path.join("data", "decisions")
@@ -51,6 +52,8 @@ def add_decision_to_project(
 
     _append_decision(project_decisions_path, decision_block)
 
-    # 2️⃣ Globale beslissingen-log
-    _ensure_global_decisions_file()
-    _append_decision(GLOBAL_DECISIONS_FILE, decision_block)
+    # 2️⃣ Globale beslissingen-log (optioneel via config)
+    if ENABLE_GLOBAL_DECISIONS_LOG:
+        _ensure_global_decisions_file()
+        _append_decision(GLOBAL_DECISIONS_FILE, decision_block)
+

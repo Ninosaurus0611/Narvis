@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from config.settings import ENABLE_GLOBAL_DECISIONS_LOG
 
 PROJECTS_DIR = os.path.join("data", "projects")
 GLOBAL_REFLECTIONS_DIR = os.path.join("data", "reflections")
