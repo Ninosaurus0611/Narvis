@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
-from config.settings import ENABLE_GLOBAL_DECISIONS_LOG
+from config.settings import ENABLE_GLOBAL_DECISIONS_LOG, BASE_DATA_DIR
 
-PROJECTS_DIR = os.path.join("data", "projects")
-GLOBAL_DECISIONS_DIR = os.path.join("data", "decisions")
+PROJECTS_DIR = os.path.join(BASE_DATA_DIR, "projects")
+GLOBAL_DECISIONS_DIR = os.path.join(BASE_DATA_DIR, "decisions")
 GLOBAL_DECISIONS_FILE = os.path.join(GLOBAL_DECISIONS_DIR, "decisions.md")
 
 

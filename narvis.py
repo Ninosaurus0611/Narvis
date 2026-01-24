@@ -4,7 +4,13 @@ from skills.notes import add_note_to_project, list_projects
 from skills.inbox import list_inbox_items, read_inbox_item, move_inbox_to_project, INBOX_DIR
 from skills.decisions import add_decision_to_project
 from skills.reflections import add_reflection_to_project
-from config.settings import AI_MODE
+from config.settings import (
+    AI_MODE,
+    BASE_DATA_DIR,
+    ENABLE_GLOBAL_DECISIONS_LOG,
+    ENABLE_GLOBAL_REFLECTIONS_LOG,
+    DECISION_PROMPTS,
+)
 
 def show_help():
     print("\nBeschikbare commando's:")
@@ -14,6 +20,7 @@ def show_help():
     print(" decision    -> voeg een beslissing toe aan een project")
     print(" process     -> verwerk inbox-item naar project")
     print(" reflection  -> voeg een reflectie toe aan een project")
+    print(" status      -> toon Narvis status & configuratie")
     print(" help        -> toon deze lijst")
     print(" exit        -> stop Narvis\n")
 
@@ -119,10 +126,19 @@ def run_narvis():
                 print("Ongeldig project.\n")
                 continue
 
-            decision = input("Wat is de beslissing?\n> ").strip()
-            reason = input("Waarom deze beslissing?\n> ").strip()
-            alternatives = input("Alternatieven (optioneel):\n> ").strip()
-            impact = input("Gevolgen / impact (optioneel):\n> ").strip()
+            decision = input("Beslissing:\n> ").strip()
+
+            reason = ""
+            if DECISION_PROMPTS["reason"]:
+                reason = input("Waarom deze beslissing?\n> ").strip()
+
+            alternatives = ""
+            if DECISION_PROMPTS["alternatives"]:
+                alternatives = input("Alternatieven:\n> ").strip()
+
+            impact = ""
+            if DECISION_PROMPTS["impact"]:
+                impact = input("Gevolgen / impact:\n> ").strip()
 
             add_decision_to_project(
                 project_id,
@@ -205,6 +221,16 @@ def run_narvis():
             )
 
             print("Reflectie opgeslagen.\n")
+
+
+        elif command == "status":
+            print("\nNarvis status:")
+            print("----------------")
+            print(f"Data map: {BASE_DATA_DIR}")
+            print(f"Globale beslissingen-log: {ENABLE_GLOBAL_DECISIONS_LOG}")
+            print(f"Globale reflecties-log: {ENABLE_GLOBAL_REFLECTIONS_LOG}")
+            print(f"AI-modus:              {AI_MODE}")
+            print("")
 
 
 

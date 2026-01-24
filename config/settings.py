@@ -1,8 +1,22 @@
-from config.defaults import *
+from config.defaults import (
+    BASE_DATA_DIR,
+    DECISION_PROMPTS,
+    REFLECTION_PROMPTS,
+    ENABLE_GLOBAL_DECISIONS_LOG,
+    ENABLE_GLOBAL_REFLECTIONS_LOG,
+    AI_MODE,
+)
 
-# Override hier wat je anders wilt
-
-# Voorbeeld:
+# Hier kun je overrides doen, bijv:
 # AI_MODE = "assist"
-# INBOX_AUTO_DELETE_ON_PROCESS = False
+# ENABLE_GLOBAL_DECISIONS_LOG = False
 
+# klein gebruik
+__all__ = [
+    "BASE_DATA_DIR",
+    "DECISION_PROMPTS",
+    "REFLECTION_PROMPTS",
+    "ENABLE_GLOBAL_DECISIONS_LOG",
+    "ENABLE_GLOBAL_REFLECTIONS_LOG",
+    "AI_MODE",
+]

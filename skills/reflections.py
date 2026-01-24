@@ -1,9 +1,9 @@
 import os
 from datetime import datetime
-from config.settings import ENABLE_GLOBAL_DECISIONS_LOG
+from config.settings import BASE_DATA_DIR, ENABLE_GLOBAL_REFLECTIONS_LOG
 
-PROJECTS_DIR = os.path.join("data", "projects")
-GLOBAL_REFLECTIONS_DIR = os.path.join("data", "reflections")
+PROJECTS_DIR = os.path.join(BASE_DATA_DIR, "projects")
+GLOBAL_REFLECTIONS_DIR = os.path.join(BASE_DATA_DIR, "reflections")
 GLOBAL_REFLECTIONS_FILE = os.path.join(GLOBAL_REFLECTIONS_DIR, "reflections.md")
 
 def _ensure_global_reflections_file():
@@ -50,5 +50,6 @@ def add_reflection_to_project(
         _append_reflection(project_reflections_path, reflection_block)
 
         # 2 Globale reflecties
-        _ensure_global_reflections_file()
-        _append_reflection(GLOBAL_REFLECTIONS_FILE, reflection_block)
+        if ENABLE_GLOBAL_REFLECTIONS_LOG:
+            _ensure_global_reflections_file()
+            _append_reflection(GLOBAL_REFLECTIONS_FILE, reflection_block)
