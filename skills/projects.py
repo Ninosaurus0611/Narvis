@@ -1,55 +1,81 @@
 import os
 import json
 from datetime import datetime
+from config.settings import BASE_DATA_DIR
 
-PROJECTS_DIR = os.path.join("data", "projects")
+# Projecten map
+PROJECTS_DIR = os.path.join(BASE_DATA_DIR, "projects")
 
-def ensure_projects_dir():
+
+def ensure_projects_dir() -> None:
+    """
+    Zorgt dat de projecten-map bestaat.
+    """
     os.makedirs(PROJECTS_DIR, exist_ok=True)
 
-def create_project(name: str, description: str = "", goal: str = "", files: list[str] = None) -> str:
+
+def list_projects() -> list[str]:
     """
-    Maakt een nieuw project aan.
-    files: lijst van bestanden die aangemaakt moeten worden, bijv. ['notes.md', 'project.json', 'script.py']
+    Geeft een lijst terug van alle project-id's.
     """
     ensure_projects_dir()
+    return [
+        name
+        for name in os.listdir(PROJECTS_DIR)
+        if os.path.isdir(os.path.join(PROJECTS_DIR, name))
+    ]
+
+
+def create_project(
+    name: str,
+    description: str = "",
+    goal: str = "",
+    files: list[str] | None = None
+) -> str:
+    """
+    Maakt een nieuw project aan.
+
+    - Altijd een projectmap
+    - Altijd een project.json (metadata)
+    - Optioneel extra bestanden (leeg / simpel)
+    """
+
+    ensure_projects_dir()
+
+    if not name.strip():
+        raise ValueError("Projectnaam mag niet leeg zijn.")
+
     project_id = name.lower().replace(" ", "_")
     project_path = os.path.join(PROJECTS_DIR, project_id)
 
     if os.path.exists(project_path):
-        raise FileExistsError(f"Project '{name}' bestaat al.")
+        raise FileExistsError(f"Project '{project_id}' bestaat al.")
 
     os.makedirs(project_path)
 
-    # Standaard bestanden
-    if files is None:
-        files = ["notes.md", "project.docx"]
+    # 1️⃣ Metadata (altijd)
+    project_data = {
+        "id": project_id,
+        "name": name,
+        "description": description,
+        "goal": goal,
+        "created_at": datetime.now().isoformat()
+    }
 
-    for file in files:
-        file_path = os.path.join(project_path, file)
-        if file.endswith(".md"):
+    project_json_path = os.path.join(project_path, "project.json")
+    with open(project_json_path, "w", encoding="utf-8") as f:
+        json.dump(project_data, f, indent=2)
+
+    # 2️⃣ Optionele bestanden (dom, geen slimme logica)
+    if files:
+        for filename in files:
+            file_path = os.path.join(project_path, filename)
+
+            if os.path.exists(file_path):
+                continue
+
             with open(file_path, "w", encoding="utf-8") as f:
-                f.write(f"# {name}\n\n")
-        elif file.endswith(".json"):
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump({
-                    "id": project_id,
-                    "name": name,
-                    "description": description,
-                    "goal": goal,
-                    "status": "active",
-                    "created_at": datetime.now().isoformat()
-                }, f, indent=2)
-        elif file.endswith(".py"):
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(f"# {name} - Python script\n\n")
-        elif file.endswith(".xlsx"):
-            # lege Excel placeholder (later openpyxl)
-            with open(file_path, "wb") as _:
-                pass
-        elif file.endswith(".docx"):
-            # lege Word placeholder (later python-docx)
-            with open(file_path, "wb") as _:
-                pass
+                if filename.endswith(".md"):
+                    f.write(f"# {name}\n\n")
 
     return project_id

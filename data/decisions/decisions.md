@@ -1,16 +1,9 @@
-# Beslissingen-log (globaal)
+# Beslissingen (globaal)
 
-## 2026-01-23 19:51
-**Project:** robert
-**Beslissing:** testtesttest
-**Waarom:** testtest
-**Alternatieven:** test
-**Gevolgen:** testgetest
-
-## 2026-01-23 19:52
-**Project:** robert
-**Beslissing:** jda
-**Waarom:** jda
-**Alternatieven:** aj
-**Gevolgen:** jda
+**Project:** test_2.2
+## 2026-01-31 18:29
+**Beslissing:** beslissing om even te testen voor stap 2
+**Waarom:** omdat dit moet
+**Alternatieven:** niet echt
+**Impact:** goedhied
 

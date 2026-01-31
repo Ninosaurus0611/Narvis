@@ -1,23 +1,20 @@
 import os
 from datetime import datetime
-from config.settings import ENABLE_GLOBAL_DECISIONS_LOG, BASE_DATA_DIR
+from config.settings import (
+    BASE_DATA_DIR,
+    ENABLE_GLOBAL_DECISIONS_LOG
+)
 
 PROJECTS_DIR = os.path.join(BASE_DATA_DIR, "projects")
 GLOBAL_DECISIONS_DIR = os.path.join(BASE_DATA_DIR, "decisions")
 GLOBAL_DECISIONS_FILE = os.path.join(GLOBAL_DECISIONS_DIR, "decisions.md")
 
 
-def _ensure_global_decisions_file():
+def _ensure_global_file():
     os.makedirs(GLOBAL_DECISIONS_DIR, exist_ok=True)
-
     if not os.path.exists(GLOBAL_DECISIONS_FILE):
         with open(GLOBAL_DECISIONS_FILE, "w", encoding="utf-8") as f:
-            f.write("# Beslissingen-log (globaal)\n\n")
-
-
-def _append_decision(filepath: str, content: str):
-    with open(filepath, "a", encoding="utf-8") as f:
-        f.write(content)
+            f.write("# Beslissingen (globaal)\n\n")
 
 
 def add_decision_to_project(
@@ -28,32 +25,28 @@ def add_decision_to_project(
     impact: str = ""
 ):
     project_path = os.path.join(PROJECTS_DIR, project_id)
-
     if not os.path.exists(project_path):
         raise FileNotFoundError("Project bestaat niet.")
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    decision_block = (
+    block = (
         f"## {timestamp}\n"
-        f"**Project:** {project_id}\n"
-        f"**Beslissing:** {decision.strip()}\n"
-        f"**Waarom:** {reason.strip()}\n"
-        f"**Alternatieven:** {alternatives.strip()}\n"
-        f"**Gevolgen:** {impact.strip()}\n\n"
+        f"**Beslissing:** {decision}\n"
+        f"**Waarom:** {reason}\n"
+        f"**Alternatieven:** {alternatives}\n"
+        f"**Impact:** {impact}\n\n"
     )
 
-    # 1️⃣ Project-specifieke beslissingen-log
-    project_decisions_path = os.path.join(project_path, "decisions.md")
+    project_file = os.path.join(project_path, "decisions.md")
+    if not os.path.exists(project_file):
+        with open(project_file, "w", encoding="utf-8") as f:
+            f.write("# Beslissingen\n\n")
 
-    if not os.path.exists(project_decisions_path):
-        with open(project_decisions_path, "w", encoding="utf-8") as f:
-            f.write("# Beslissingen-log\n\n")
+    with open(project_file, "a", encoding="utf-8") as f:
+        f.write(block)
 
-    _append_decision(project_decisions_path, decision_block)
-
-    # 2️⃣ Globale beslissingen-log (optioneel via config)
     if ENABLE_GLOBAL_DECISIONS_LOG:
-        _ensure_global_decisions_file()
-        _append_decision(GLOBAL_DECISIONS_FILE, decision_block)
-
+        _ensure_global_file()
+        with open(GLOBAL_DECISIONS_FILE, "a", encoding="utf-8") as f:
+            f.write(f"**Project:** {project_id}\n{block}")
